@@ -80,12 +80,17 @@ curl -X POST http://<vm public address>/inference \
 #### Python
 ```python
 import requests
+import json
 
 url = "http://<vm public address>/inference"
+file_path = "test.mp3"
 
-files = {
-    "file": ("testfile.mp3", open("testfile.mp3", "rb"), "audio/mp3"),
-    "content_type": (None, "audio/mp3")
-}
-response = requests.post(url, files=files)
+with open(file_path, 'rb') as f:
+    files = {'file': f}
+    data = {'content_type': 'audio/mp3'}
+
+    response = requests.post(url, files=files, data=data)
+
+response_data = response.json()
+print(json.dumps(response_data, indent=2, ensure_ascii=False))
 ```
