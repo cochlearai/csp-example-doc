@@ -1,13 +1,18 @@
 # Deploy and inference Cochl-sense with GCP marketplace VM
 
 ## Deploy the virtual machine
+
 TODO: add content how to deploy
 
 ## How to request the deployed VM
-We provides REST APIs, you can see details below.
+
+We provides REST APIs, you can see details below  
+*It is recommended to check the status by calling `/health` before calling `/inference` for the first time*
 
 ### [GET] /health
-#### Success response
+
+#### health-check success response
+
 ```json
 # StatusCode: 200
 {
@@ -15,7 +20,8 @@ We provides REST APIs, you can see details below.
 }
 ```
 
-#### Failure response
+#### health-check failure response
+
 ```json
 # StatusCode: 503
 {
@@ -24,38 +30,60 @@ We provides REST APIs, you can see details below.
 ```
 
 ### [POST] /inference
-#### Request format
-- The request must be sent as `multipart/form-data`:
-- `file`: The audio file (e.g., testfile.mp3).
-- `content_type`: The MIME type of the file (e.g., audio/mp3).
-  - supported type : [ audio/mp3, audio/wav, audio/ogg ]
 
-#### Success response
+#### inference request format
+
+- The request must be sent as `multipart/form-data`:
+  - `file`: The audio file (e.g., testfile.mp3).
+  - `content_type`: The MIME type of the file (e.g., audio/mp3).
+    - supported type : [ audio/mp3, audio/wav, audio/ogg ]
+
+#### inference Success response
+
 ```json
 # StatusCode: 200
 {
   "metadata": {
     "content_type": "audio/mp3",
-    "length_sec": 123,
-    "size_byte": 1234,
+    "length_sec": 3.012,
+    "size_byte": 12345,
     "name": "testfile.mp3"
   },
   "data": [
     {
-        "tags": [
-            {
-                "name": "Gunshot",
-                "probability": 0.654321,
-            },
-            ...
-        ]
+      "tags": [
+          {
+            "name": "Drum",
+            "probability": 0.51982635
+          },
+      ],
+      "start_time": 0,
+      "end_time": 2
     },
-    ...
+    {
+      "tags": [
+          {
+            "name": "Instrument",
+            "probability": 0.9662908
+          },
+          {
+            "name": "Piano",
+            "probability": 0.44879228
+          },
+          {
+            "name": "Music",
+            "probability": 0.9662908
+          }
+       ],
+       "start_time": 1,
+       "end_time": 3
+    }
   ]
 }
 ```
 
-#### Failure response
+#### inference failure response
+
 ```json
 # StatusCode: 400
 {
@@ -70,7 +98,9 @@ We provides REST APIs, you can see details below.
 ```
 
 ### Inference request examples
+
 #### curl
+
 ```bash
 curl -X POST http://<vm public address>/inference \
 -F "file=@testfile.mp3" \
@@ -78,6 +108,7 @@ curl -X POST http://<vm public address>/inference \
 ```
 
 #### Python
+
 ```python
 import requests
 import json
