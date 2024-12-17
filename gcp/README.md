@@ -1,12 +1,22 @@
 # Deploy and inference Cochl-sense with GCP marketplace VM
 
+This guide explains how to deploy and use the Cochl-Sense VM through the GCP Marketplace.
+
 ## Deploy the virtual machine
 
-TODO: add content how to deploy
+You need to configure the VM's resources.  
+By default, we recommend using `n1-standard-2` machine type (2 vCPUs, 7.5 GB memory), `NVIDIA T4` GPU, and at least `40GB of disk size`.   
+Please refer to the screenshot below.  
+![machine type](/gcp/img/instance-type.png)
+
+Once the VM deployment is complete, verify the configuration of the created resources.  
+After the VM is fully up and running, you can start using the application. (It is recommended to wait 1-2 minutes for a stable system load.)
+
+Additionally, `for security reasons, SSH access is disabled`
 
 ## How to request the deployed VM
 
-We provides REST APIs, you can see details below  
+We provides REST APIs, you can see details below.  
 *It is recommended to check the status by calling `/health` before calling `/inference` for the first time*
 
 ### [GET] /health
