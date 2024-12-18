@@ -1,4 +1,4 @@
-# Deploy and inference Cochl.Sense Cloud API on GCP marketplace VM
+# Deploy and inference Cochl.Sense Cloud API on Google Cloud Platform
 
 This guide explains how to deploy and use the Cochl.Sense Cloud API VM through the GCP Marketplace.
 
