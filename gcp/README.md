@@ -101,7 +101,8 @@ We provides REST APIs, you can see details below.
 }
 
 # StatusCode: 429
-# This case occurs when system resources(cpu, memory) exceed threshold
+# This case occurs when system resources(cpu, memory or queue-time) exceed threshold
+# If the queue-time exceeds the threshold, system typically starts accepting requests again after approximately 20 seconds.
 {
     "error": "server is too busy"
 }
