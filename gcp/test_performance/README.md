@@ -9,7 +9,7 @@
 
 ## Test result
 
-The test was done using the k6 tool, and we checked the maximum number of requests the system can handle without any issues.
+The test used the k6 tool to measure the maximum requests the minimum-spec system can handle without issues.
 
 ### 10 seconds file
 
