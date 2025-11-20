@@ -4,19 +4,19 @@ This guide explains how to deploy and use the Cochl.Sense Cloud API VM through t
 
 ## Deploy the virtual machine
 
-You need to configure the VM's resources.  
-The minimum specification is the `n1-standard-2` machine type (2 vCPUs, 7.5GB memory), but we recommend using the `n1-standard-4` machine type (4 vCPUs, 15GB memory). Additionally, at least one NVIDIA T4 or better GPU and a minimum of 40GB of disk space are required.   
-Please refer to the screenshot below.  
+You need to configure the VM's resources.
+The minimum specification is the `n1-standard-2` machine type (2 vCPUs, 7.5GB memory), but we recommend using the `n1-standard-4` machine type (4 vCPUs, 15GB memory). Additionally, at least one NVIDIA T4 or better GPU and a minimum of 40GB of disk space are required.
+Please refer to the screenshot below.
 ![machine type](/gcp/img/instance-type.png)
 
-Once the VM deployment is complete, verify the configuration of the created resources.  
+Once the VM deployment is complete, verify the configuration of the created resources.
 After the VM is fully up and running, you can start using the application. (It is recommended to wait 1-2 minutes for a stable system load.)
 
 Additionally, `for security reasons, SSH access is disabled`
 
 ## How to request the deployed VM
 
-We provides REST APIs, you can see details below.  
+We provides REST APIs, you can see details below.
 *It is recommended to check the status by calling `/health` before calling `/inference` for the first time*
 
 ### [GET] /health
