@@ -36,6 +36,11 @@ We provide REST APIs. You can see details below.
 # StatusCode: 503
 {
     "error": "server response but not ready"
+},
+
+# This case occurs when the model server has not fully loaded initially
+{
+    "error": "rpc error: code = Unavailable desc = connection error..."
 }
 ```
 
