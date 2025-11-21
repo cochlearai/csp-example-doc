@@ -36,7 +36,7 @@ We provide REST APIs. You can see details below.
 # StatusCode: 503
 {
     "error": "server response but not ready"
-},
+}
 
 # This case occurs when the model server has not fully loaded initially
 {
@@ -59,9 +59,16 @@ We provide REST APIs. You can see details below.
   - `default_sensitivity`:(optional) Default: 0, If set, it allows to provide a default adjusted sensitivity for all tags
     - The sensitivity adjustment ranges in [-2, 2]
     - 0 is used if not set
-    - Positive values increase tag appearance (more tags will appear), negative values decrease it (fewer tags will appear)
-      - If certain tags are not being detected frequently, try increasing the sensitivity.
-      - If you experience too many false detection, lowering the sensitivity may help.
+  - `tags_sensitivity`: (optional)If set, it allows to adjust the sensitivity of a given tag [in this list](https://docs.cochl.ai/sense/home/soundtags/)
+    - The sensitivity adjustment ranges in [-2, 2]
+    - A value of 0 preserves the default sensitivity
+    - e.g. {"Siren": 2, "Laughter": -2}
+
+##### Sensitivity control
+- Sensitivity can be set globally or individually per tag.
+- Positive values increase tag appearance (more tags will appear), negative values decrease it (fewer tags will appear)
+  - If certain tags are not being detected frequently, try increasing the sensitivity.
+  - If you experience too many false detection, lowering the sensitivity may help.
 
 #### inference Success response
 
@@ -127,9 +134,40 @@ Available tags can be found in the documentation below:
 
 ### Inference request examples
 
-#### Standard audio file examples
+#### Basic examples
 
-##### curl
+##### curl - Standard audio file
+
+```bash
+curl -X POST http://<vm public address>/inference \
+-F "file=@testfile.mp3" \
+-F "content_type=audio/mp3"
+```
+
+##### Python - Standard audio file
+
+```python
+import requests
+import json
+
+url = "http://<vm public address>/inference"
+file_path = "test.mp3"
+
+with open(file_path, 'rb') as f:
+    files = {'file': f}
+    data = {
+        'content_type': 'audio/mp3'
+    }
+
+    response = requests.post(url, files=files, data=data)
+
+response_data = response.json()
+print(json.dumps(response_data, indent=2, ensure_ascii=False))
+```
+
+#### Advanced examples
+
+##### curl - With global sensitivity
 
 ```bash
 curl -X POST http://<vm public address>/inference \
@@ -138,7 +176,7 @@ curl -X POST http://<vm public address>/inference \
 -F "default_sensitivity=1"
 ```
 
-##### Python
+##### Python - With global sensitivity
 
 ```python
 import requests
@@ -151,7 +189,7 @@ with open(file_path, 'rb') as f:
     files = {'file': f}
     data = {
         'content_type': 'audio/mp3',
-        'default_sensitivity': 1  # optional: ranges in [-2, 2], default is 0
+        'default_sensitivity': 1  # global sensitivity: ranges in [-2, 2], default is 0
     }
 
     response = requests.post(url, files=files, data=data)
@@ -160,19 +198,38 @@ response_data = response.json()
 print(json.dumps(response_data, indent=2, ensure_ascii=False))
 ```
 
-#### Raw PCM audio data examples
-
-##### curl
+##### curl - With per-tag sensitivity
 
 ```bash
-# Example: 22,050Hz, signed 32-bit little-endian, mono channel
 curl -X POST http://<vm public address>/inference \
--F "file=@raw_audio.raw" \
--F "content_type=audio/x-raw;rate=22050;format=s32le;channels=1" \
--F "default_sensitivity=1"
+-F "file=@testfile.mp3" \
+-F "content_type=audio/mp3" \
+-F 'tags_sensitivity={"Siren": 2, "Laughter": -2}'
 ```
 
-##### Python
+##### Python - With per-tag sensitivity
+
+```python
+import requests
+import json
+
+url = "http://<vm public address>/inference"
+file_path = "test.mp3"
+
+with open(file_path, 'rb') as f:
+    files = {'file': f}
+    data = {
+        'content_type': 'audio/mp3',
+        'tags_sensitivity': json.dumps({"Siren": 2, "Laughter": -2})  # per-tag sensitivity: ranges in [-2, 2]
+    }
+
+    response = requests.post(url, files=files, data=data)
+
+response_data = response.json()
+print(json.dumps(response_data, indent=2, ensure_ascii=False))
+```
+
+##### Python - Raw PCM audio data
 
 ```python
 import requests
@@ -185,8 +242,7 @@ file_path = "raw_audio.raw"
 with open(file_path, 'rb') as f:
     files = {'file': f}
     data = {
-        'content_type': 'audio/x-raw;rate=22050;format=s32le;channels=1',
-        'default_sensitivity': 1  # optional: ranges in [-2, 2], default is 0
+        'content_type': 'audio/x-raw;rate=22050;format=s32le;channels=1'
     }
 
     response = requests.post(url, files=files, data=data)
