@@ -49,17 +49,17 @@ We provide REST APIs. You can see details below.
 #### inference request format
 
 - The request must be sent as *multipart/form-data*:
-  - `file`:(*required*) The audio file (e.g., testfile.mp3).
-  - `content_type`:(*required*) The MIME type of the file (e.g., audio/mp3).
+  - `file`: (*required*) The audio file (e.g., testfile.mp3).
+  - `content_type`: (*required*) The MIME type of the file (e.g., audio/mp3).
     - There are three options for file format audio: `[ audio/mp3, audio/wav, audio/ogg ]`
-    - For raw PCM data, you can use this format: `audio/x-raw; rate={sample_rate}; format={sample_format}; channels={num of channel}`. For example, when samplerate is `22,050Hz`, sample format is `signed 24-bit little-endian` and number of channels is `1`, content_type should be `audio/x-raw; rate=22050; format=s24le; channels=1`.
+    - For raw PCM data, you can use this format: `audio/x-raw; rate={sample_rate}; format={sample_format}; channels={num of channel}`. For example, when samplerate is `22050 Hz`, sample format is `signed 24-bit little-endian` and number of channels is `1`, content_type should be `audio/x-raw; rate=22050; format=s24le; channels=1`.
        - s16le, s24le, s32le, s16be, s24be, s32be
        - u16le, u24le, u32le, u16be, u24be, u32be
        - f16le, f24le, f32le, f16be, f24be, f32be
-  - `default_sensitivity`:(optional) Default: 0, If set, it allows to provide a default adjusted sensitivity for all tags
+  - `default_sensitivity`: (optional) Default: 0, If set, it allows to provide a default adjusted sensitivity for all tags
     - The sensitivity adjustment ranges in [-2, 2]
     - 0 is used if not set
-  - `tags_sensitivity`: (optional)If set, it allows to adjust the sensitivity of a given tag [in this list](https://docs.cochl.ai/sense/home/soundtags/)
+  - `tags_sensitivity`: (optional) If set, it allows to adjust the sensitivity of a given tag [in this list](https://docs.cochl.ai/sense/home/soundtags/)
     - The sensitivity adjustment ranges in [-2, 2]
     - A value of 0 preserves the default sensitivity
     - e.g. {"Siren": 2, "Laughter": -2}
@@ -70,7 +70,7 @@ We provide REST APIs. You can see details below.
   - If certain tags are not being detected frequently, try increasing the sensitivity.
   - If you experience too many false detection, lowering the sensitivity may help.
 
-#### inference Success response
+#### Inference success response
 
 ```json
 # StatusCode: 200
@@ -116,7 +116,7 @@ We provide REST APIs. You can see details below.
 Available tags can be found in the documentation below:
 - https://docs.cochl.ai/sense/home/soundtags/
 
-#### inference failure response
+#### Inference failure response
 
 ```json
 # StatusCode: 400
@@ -125,8 +125,8 @@ Available tags can be found in the documentation below:
 }
 
 # StatusCode: 429
-# This case occurs when system resources(cpu, memory or queue-time) exceed threshold
-# If the queue-time exceeds the threshold, system typically starts accepting requests again after approximately 20 seconds.
+# This case occurs when system resources (cpu, memory or queue time) exceed threshold
+# If the queue time exceeds the threshold, system typically starts accepting requests again after approximately 20 seconds.
 {
     "error": "server is too busy"
 }
@@ -136,7 +136,7 @@ Available tags can be found in the documentation below:
 
 #### Basic examples
 
-##### curl - Standard audio file
+##### curl
 
 ```bash
 curl -X POST http://<vm public address>/inference \
@@ -144,7 +144,7 @@ curl -X POST http://<vm public address>/inference \
 -F "content_type=audio/mp3"
 ```
 
-##### Python - Standard audio file
+##### Python
 
 ```python
 import requests
@@ -155,10 +155,7 @@ file_path = "test.mp3"
 
 with open(file_path, 'rb') as f:
     files = {'file': f}
-    data = {
-        'content_type': 'audio/mp3'
-    }
-
+    data = {'content_type': 'audio/mp3'}
     response = requests.post(url, files=files, data=data)
 
 response_data = response.json()
@@ -167,16 +164,7 @@ print(json.dumps(response_data, indent=2, ensure_ascii=False))
 
 #### Advanced examples
 
-##### curl - With global sensitivity
-
-```bash
-curl -X POST http://<vm public address>/inference \
--F "file=@testfile.mp3" \
--F "content_type=audio/mp3" \
--F "default_sensitivity=1"
-```
-
-##### Python - With global sensitivity
+##### Python - With sensitivity control
 
 ```python
 import requests
@@ -189,40 +177,9 @@ with open(file_path, 'rb') as f:
     files = {'file': f}
     data = {
         'content_type': 'audio/mp3',
-        'default_sensitivity': 1  # global sensitivity: ranges in [-2, 2], default is 0
-    }
-
-    response = requests.post(url, files=files, data=data)
-
-response_data = response.json()
-print(json.dumps(response_data, indent=2, ensure_ascii=False))
-```
-
-##### curl - With per-tag sensitivity
-
-```bash
-curl -X POST http://<vm public address>/inference \
--F "file=@testfile.mp3" \
--F "content_type=audio/mp3" \
--F 'tags_sensitivity={"Siren": 2, "Laughter": -2}'
-```
-
-##### Python - With per-tag sensitivity
-
-```python
-import requests
-import json
-
-url = "http://<vm public address>/inference"
-file_path = "test.mp3"
-
-with open(file_path, 'rb') as f:
-    files = {'file': f}
-    data = {
-        'content_type': 'audio/mp3',
+        'default_sensitivity': 1,  # global sensitivity: ranges in [-2, 2], default is 0
         'tags_sensitivity': json.dumps({"Siren": 2, "Laughter": -2})  # per-tag sensitivity: ranges in [-2, 2]
     }
-
     response = requests.post(url, files=files, data=data)
 
 response_data = response.json()
@@ -238,13 +195,12 @@ import json
 url = "http://<vm public address>/inference"
 file_path = "raw_audio.raw"
 
-# Example: 22,050Hz, signed 32-bit little-endian, mono channel
+# Example: 22050 Hz, signed 32-bit little-endian, mono channel
 with open(file_path, 'rb') as f:
     files = {'file': f}
     data = {
         'content_type': 'audio/x-raw;rate=22050;format=s32le;channels=1'
     }
-
     response = requests.post(url, files=files, data=data)
 
 response_data = response.json()
