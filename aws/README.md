@@ -14,14 +14,12 @@ Both Real-time Inference and Asynchronous Inference are supported.
        - s16le, s24le, s32le, s16be, s24be, s32be
        - u16le, u24le, u32le, u16be, u24be, u32be
        - f16le, f24le, f32le, f16be, f24be, f32be
-  - `X-Default-Sensitivity`: (optional) Default: 0, If set, it allows to provide a default adjusted sensitivity for all tags
-    - The sensitivity adjustment ranges in [-2, 2] (integer)
-    - 0 is used if not set
-  - `X-Tags-Sensitivity`: (optional) If set, it allows to adjust the sensitivity of a given tag [in this list](https://docs.cochl.ai/sense/home/soundtags/)
-    - The sensitivity adjustment ranges in [-2, 2] (integer)
-    - A value of 0 preserves the default sensitivity
-    - e.g. {"Siren": 2, "Laughter": -2}
-    - **Note**: This value must be a JSON string.
+  - `X-Amzn-SageMaker-Custom-Attributes`: (optional) Custom attributes to control sensitivity.
+    - Format: `key1=value1,key2=value2`
+    - Supported Keys:
+      - `X-Default-Sensitivity`: Default: 0. Range: [-2, 2] (integer). Adjusts sensitivity for all tags.
+      - `X-Tags-Sensitivity`: Per-tag sensitivity adjustment. Value must be a JSON string. Range: [-2, 2] (integer).
+    - Example: `X-Default-Sensitivity=1,X-Tags-Sensitivity={"Siren": 2, "Laughter": -2}`
 
 - **Body**:
   - The body of the request must be the raw binary data of the audio file.
