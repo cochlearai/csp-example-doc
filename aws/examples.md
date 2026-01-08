@@ -179,7 +179,6 @@ response = sagemaker_client.create_transform_job(
     ModelName=model_name,
     MaxConcurrentTransforms=1,
     MaxPayloadInMB=100,  # Max payload size
-    BatchStrategy='SingleRecord',
     TransformInput={
         'DataSource': {
             'S3DataSource': {
@@ -212,7 +211,6 @@ aws sagemaker create-transform-job \
     --model-name <your-model-name> \
     --max-concurrent-transforms 1 \
     --max-payload-in-mb 100 \
-    --batch-strategy SingleRecord \
     --transform-input DataSource={S3DataSource={S3DataType=S3Prefix,S3Uri=s3://<your-input-bucket>/input-data/}},ContentType=audio/mp3,CompressionType=None,SplitType=None \
     --transform-output S3OutputPath=s3://<your-output-bucket>/output-data/,AssembleWith=None \
     --transform-resources InstanceType=ml.g4dn.xlarge,InstanceCount=1
