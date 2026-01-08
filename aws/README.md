@@ -28,14 +28,23 @@ We support **Real-time Inference**, **Asynchronous Inference**, and **Batch Tran
 
 | Inference Type | Max Payload Size | Processing Time Limit |
 | :--- | :--- | :--- |
-| **Real-time Inference** | 6 MB | 60 seconds |
+| **Real-time Inference** | 25 MB | 60 seconds |
 | **Asynchronous Inference** | 1 GB | 60 minutes |
 | **Batch Transform** | - | - |
 
 **Note**: For Asynchronous Inference and Batch Transform, we recommend using a payload size smaller than the maximum limit to ensure stability. For Batch Transform, the default payload limit is 6 MB if not configured. Therefore, it is important to configure `MaxPayloadInMB` when creating a transform job.
 
-
 For more details on limits, please refer to the [Inference options](https://docs.aws.amazon.com/sagemaker/latest/dg/deploy-model-options.html) page.
+
+### Performance Considerations
+
+Processing time increases proportionally with audio file length. Shorter audio files allow for higher throughput, while longer files require more processing time per request.
+
+- **Short files (under 30 seconds)**: Suitable for real-time inference with low latency.
+- **Medium files (30 seconds to 2 minutes)**: Consider using Asynchronous Inference if processing multiple files concurrently.
+- **Long files (over 2 minutes)**: Recommended to use Asynchronous Inference or Batch Transform to avoid timeout issues.
+
+For high-throughput workloads, consider scaling the number of instances or using Batch Transform for offline processing.
 
 ## Output Format
 
