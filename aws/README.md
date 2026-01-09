@@ -60,7 +60,7 @@ The inference result is returned in JSON format.
     "content_type": "audio/mp3",
     "length_sec": 3.012,
     "size_byte": 12345,
-    "name": "testfile.mp3"
+    "name": "sagemaker_input"
   },
   "data": [
     {
