@@ -37,7 +37,7 @@ print(response['Body'].read().decode('utf-8'))
 
 #### With Sensitivity Control
 
-You can pass sensitivity parameters via `CustomAttributes` header.
+You can pass sensitivity parameters via `CustomAttributes` header as a JSON string.
 
 ```python
 import boto3
@@ -49,10 +49,11 @@ endpoint_name = '<your-endpoint-name>'
 file_path = 'test.mp3'
 content_type = 'audio/mp3'
 
-# Prepare CustomAttributes
-# Note: Format depends on how the container parses it. Assuming key=value format.
-tags_sensitivity = json.dumps({"Siren": 2, "Laughter": -2})
-custom_attributes = f'X-Default-Sensitivity=1,X-Tags-Sensitivity={tags_sensitivity}'
+# Prepare CustomAttributes as JSON
+custom_attributes = json.dumps({
+    "default_sensitivity": 1,
+    "tags_sensitivity": {"Siren": 2, "Laughter": -2}
+})
 
 with open(file_path, 'rb') as f:
     payload = f.read()
@@ -87,7 +88,7 @@ cat response.json
 aws sagemaker-runtime invoke-endpoint \
     --endpoint-name <your-endpoint-name> \
     --content-type audio/mp3 \
-    --custom-attributes 'X-Default-Sensitivity=1,X-Tags-Sensitivity={"Siren": 2, "Laughter": -2}' \
+    --custom-attributes '{"default_sensitivity": 1, "tags_sensitivity": {"Siren": 2, "Laughter": -2}}' \
     --body fileb://test.mp3 \
     response.json
 
