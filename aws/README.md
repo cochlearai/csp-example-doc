@@ -11,9 +11,9 @@ We support **Real-time Inference**, **Asynchronous Inference**, and **Batch Tran
     - `application/octet-stream` is used for auto-detection of the audio format.
       - **Note**: Auto-detection does not support raw PCM data.
     - For raw PCM data, you can use this format: `audio/x-raw; rate={sample_rate}; format={sample_format}; channels={num of channel}`. For example, when samplerate is `22050 Hz`, sample format is `signed 24-bit little-endian` and number of channels is `1`, content_type should be `audio/x-raw; rate=22050; format=s24le; channels=1`.
-       - s16le, s24le, s32le, s16be, s24be, s32be
-       - u16le, u24le, u32le, u16be, u24be, u32be
-       - f16le, f24le, f32le, f16be, f24be, f32be
+      - s16le, s24le, s32le, s16be, s24be, s32be
+      - u16le, u24le, u32le, u16be, u24be, u32be
+      - f16le, f24le, f32le, f16be, f24be, f32be
   - `X-Amzn-SageMaker-Custom-Attributes`: (optional) Custom attributes to control sensitivity. Value must be a JSON string.
     - Supported Fields:
       - `default_sensitivity`: Default: 0. Range: [-2, 2] (integer). Adjusts sensitivity for all tags.
@@ -41,13 +41,15 @@ For more details on limits, please refer to the [Inference options](https://docs
 
 ### Performance Considerations
 
-Processing time increases proportionally with audio file length. Shorter audio files allow for higher throughput, while longer files require more processing time per request.
+Processing time scales proportionally with audio file length. Shorter audio files allow for higher throughput.
 
-- **Short files (under 30 seconds)**: Suitable for real-time inference with low latency.
-- **Medium files (30 seconds to 2 minutes)**: Consider using Asynchronous Inference if processing multiple files concurrently.
-- **Long files (over 2 minutes)**: Recommended to use Asynchronous Inference or Batch Transform to avoid timeout issues.
+#### Choosing the Right Inference Type
 
-For high-throughput workloads, consider scaling the number of instances or using Batch Transform for offline processing.
+- **Real-time Inference**: Best for low-latency, on-demand requests.
+- **Asynchronous Inference**: Suitable for longer audio files or high-concurrency workloads.
+- **Batch Transform**: Best for processing large datasets at once. Note that provisioning time is significant, so it is not efficient for small batches.
+
+For high-throughput workloads, consider scaling the number of instances.
 
 ## Output Format
 
@@ -96,7 +98,8 @@ The inference result is returned in JSON format.
 ```
 
 Available tags can be found in the documentation below:
-- https://docs.cochl.ai/sense/home/soundtags/
+
+- [Sound Tags Documentation](https://docs.cochl.ai/sense/home/soundtags/)
 
 ## Inference Examples
 
@@ -105,3 +108,5 @@ Please refer to [Examples](examples.md) for detailed code snippets for:
 - [Real-time Inference](examples.md#real-time-inference)
 - [Asynchronous Inference](examples.md#asynchronous-inference)
 - [Batch Transform](examples.md#batch-transform)
+
+For a hands-on example, see the [Jupyter Notebook](notebook/Cochl_Sense-Model.ipynb).
