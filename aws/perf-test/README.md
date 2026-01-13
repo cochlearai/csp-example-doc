@@ -8,10 +8,38 @@ This document presents the performance test results for Cochl.Sense Cloud API on
 - **Test Duration**: 1 minute per scenario (with 30s graceful stop)
 - **Region**: us-east-1 (test client and endpoint in the same region)
 - **Endpoint Configuration**: Single instance (no auto-scaling)
+- **Test Client**: EC2 instance with IAM role (SageMaker invoke permissions)
+- **Test Script**: [`script/k6_sagemaker.js`](script/k6_sagemaker.js)
+- **Test Data**: [`10sec_test.mp3`](../../dataset/10sec_test.mp3), [`35sec_test.mp3`](../../dataset/35sec_test.mp3)
+
+## How to Run
+
+### Environment Variables
+
+| Variable | Required | Default | Description |
+|----------|:--------:|---------|-------------|
+| `ENDPOINT_NAME` | ✓ | - | SageMaker endpoint name |
+| `AWS_REGION` | | `us-east-1` | AWS region |
+| `TARGET_FILE` | | `10sec_test.mp3` | Test audio file |
+| `RATE` | | `5` | Requests per time unit |
+| `TIME_UNIT` | | `1s` | Time unit for rate |
+| `DURATION` | | `1m` | Test duration |
+| `MAX_VUS` | | `20` | Maximum virtual users |
+
+### Example
+
+```bash
+ENDPOINT_NAME=my-endpoint \
+AWS_REGION=us-east-1 \
+TARGET_FILE=10sec_test.mp3 \
+RATE=5 \
+k6 run script/k6_sagemaker.js
+```
 
 ## Test Scenarios
 
 Two audio file lengths were tested for each instance type:
+
 - **10-second audio file**: Simulates short audio processing
 - **35-second audio file**: Simulates longer audio processing
 
