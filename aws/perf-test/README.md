@@ -6,7 +6,8 @@ This document presents the performance test results for Cochl.Sense Cloud API on
 
 - **Test Tool**: [Grafana k6](https://k6.io/)
 - **Test Duration**: 1 minute per scenario (with 30s graceful stop)
-- **Test Script**: `k6_sagemaker.js`
+- **Region**: us-east-1 (test client and endpoint in the same region)
+- **Endpoint Configuration**: Single instance (no auto-scaling)
 
 ## Test Scenarios
 
@@ -104,20 +105,3 @@ Two audio file lengths were tested for each instance type:
 - **Avg Latency**: 499.29 ms
 - **p(95) Latency**: 517.78 ms
 - **Success Rate**: 100%
-
-## Key Findings
-
-1. **Instance Performance Ranking** (10-sec audio):
-   - `ml.g6.xlarge` > `ml.g5.xlarge` > `ml.g4dn.xlarge`
-   - ml.g6.xlarge achieved 3.2x higher throughput than ml.g4dn.xlarge
-
-2. **Latency Characteristics**:
-   - All instance types maintained sub-1-second average latency
-   - p(95) latency remained stable across all tests
-
-3. **Audio Length Impact**:
-   - Longer audio files (35 sec) significantly reduce achievable throughput
-   - Latency increases proportionally with audio length
-
-4. **Reliability**:
-   - All tests achieved 100% success rate with 0% failure rate
