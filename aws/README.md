@@ -52,6 +52,8 @@ To handle this, implement retry logic with exponential backoff in your client ap
 
 Processing time scales proportionally with audio file length. Shorter audio files allow for higher throughput.
 
+For detailed benchmark results by instance type (latency, max RPS, etc.), see the [Performance Test Results](perf-test/README.md).
+
 #### Choosing the Right Inference Type
 
 - **Real-time Inference**: Best for low-latency, on-demand requests.
