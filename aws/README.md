@@ -39,6 +39,15 @@ We support **Real-time Inference**, **Asynchronous Inference**, and **Batch Tran
 
 For more details on limits, please refer to the [Inference options](https://docs.aws.amazon.com/sagemaker/latest/dg/deploy-model-options.html) page.
 
+### Rate Limiting (HTTP 429)
+
+When the endpoint receives more requests than it can handle, it may return HTTP status code `429 (Too Many Requests)`. This typically occurs when:
+
+- Concurrent requests exceed the endpoint's processing capacity
+- The request queue is full
+
+To handle this, implement retry logic with exponential backoff in your client application. Consider scaling the number of instances if you consistently experience rate limiting.
+
 ### Performance Considerations
 
 Processing time scales proportionally with audio file length. Shorter audio files allow for higher throughput.
